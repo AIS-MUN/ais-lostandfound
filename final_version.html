@@ -1,0 +1,1632 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindMyStuff - Lost & Found Community</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    :root {
+        --primary: #1e3a8a;
+        --secondary: #3b82f6;
+        --accent: #f59e0b;
+        --danger: #ef4444;
+        --success: #10b981;
+        --light: #f8fafc;
+        --dark: #0f172a;
+        --gray: #64748b;
+        --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        scroll-behavior: smooth;
+    }
+    body {
+        background-color: #f5f7fa;
+        color: var(--dark);
+        line-height: 1.6;
+    }
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+    header {
+        background-color: white;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+    }
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+    .logo i {
+        font-size: 2rem;
+        color: var(--secondary);
+    }
+    .quick-links {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+    .quick-link {
+        color: var(--dark);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    .quick-link:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: var(--secondary);
+        transform: translateY(-1px);
+    }
+    .quick-link i {
+        margin-right: 6px;
+    }
+    
+    body.admin-mode header {
+        border-left: 4px solid var(--accent) !important;
+        background: linear-gradient(90deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%) !important;
+    }
+    
+    @media (max-width: 768px) {
+        .logo i {
+            font-size: 1.5rem;
+        }
+        .logo {
+            gap: 8px;
+        }
+        .logo span {
+            font-size: 1.2rem;
+        }
+        .quick-links {
+            gap: 10px;
+        }
+        .quick-link {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+    }
+    
+    .hero {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+        padding: 100px 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+    .hero p {
+        font-size: 1.2rem;
+        max-width: 700px;
+        margin: 0 auto 30px;
+    }
+    .search-bar {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        border-radius: 50px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+    .search-bar input {
+        flex: 1;
+        padding: 15px 20px;
+        border: none;
+        font-size: 1rem;
+    }
+    .search-bar button {
+        background-color: var(--secondary);
+        color: white;
+        border: none;
+        padding: 0 25px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .search-bar button:hover {
+        background-color: #27ae60;
+    }
+    .main-content {
+        padding: 60px 0;
+    }
+    .section-title {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .section-title h2 {
+        font-size: 2rem;
+        color: var(--dark);
+        margin-bottom: 10px;
+    }
+    .section-title p {
+        color: var(--gray);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .tabs {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #dee2e6;
+        flex-wrap: wrap;
+    }
+    .tab {
+        padding: 12px 24px;
+        cursor: pointer;
+        font-weight: 500;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s;
+    }
+    .tab.active {
+        color: var(--primary);
+        border-bottom: 3px solid var(--primary);
+    }
+    .items-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+    }
+    .item-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    .item-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    .item-image {
+        height: 180px;
+        background-color: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gray);
+    }
+    .item-image i {
+        font-size: 3rem;
+    }
+    .item-details {
+        padding: 20px;
+    }
+    .item-details h3 {
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+    }
+    .item-meta {
+        display: flex;
+        justify-content: space-between;
+        color: var(--gray);
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .item-status {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    .status-lost {
+        background-color: rgba(231,76,60,0.1);
+        color: var(--danger);
+    }
+    .status-found {
+        background-color: rgba(46,204,113,0.1);
+        color: var(--secondary);
+    }
+    .status-claimed {
+        background-color: rgba(16,185,129,0.1);
+        color: var(--success);
+    }
+    .item-description {
+        margin-bottom: 15px;
+        color: var(--dark);
+    }
+    .item-contact {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .claim-btn {
+        background-color: var(--accent);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+        font-weight: 500;
+    }
+    .claim-btn:hover {
+        background-color: #e6890b;
+        transform: translateY(-2px);
+    }
+    
+    .report-section {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        border-radius: 20px;
+        padding: 60px 40px;
+        margin-top: 60px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .report-btn {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        color: white;
+        border: 2px solid rgba(255,255,255,0.3);
+        padding: 18px 36px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+    .report-btn:hover {
+        background: rgba(255,255,255,0.25);
+        border-color: rgba(255,255,255,0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .report-btn i {
+        font-size: 1.2rem;
+    }
+    
+    @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px 0;
+        }
+        .quick-links {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        nav ul {
+            gap: 15px;
+        }
+        .hero h1 {
+            font-size: 2rem;
+        }
+        .items-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .tabs {
+            flex-direction: column;
+            align-items: center;
+        }
+        .items-grid {
+            grid-template-columns: 1fr;
+        }
+        .report-section {
+            padding: 20px;
+        }
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--gray);
+    }
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+    .empty-state h3 {
+        margin-bottom: 10px;
+        color: var(--dark);
+    }
+    
+    footer {
+        background-color: #1a4e8e;
+        color: white;
+        padding: 50px 0 20px;
+        margin-top: 60px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .footer-content {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .footer-text {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 10px;
+    }
+    
+    .footer-divider {
+        width: 100px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        margin: 20px auto;
+        border-radius: 2px;
+    }
+    
+    .copyright {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+    
+    .student-made {
+        font-size: 0.85rem;
+        color: var(--accent);
+        font-weight: 600;
+        margin-top: 5px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    #admin-panel {
+        transition: all 0.3s ease;
+    }
+    
+    #admin-panel.minimized {
+        width: 60px !important;
+        max-width: 60px !important;
+        height: 60px !important;
+        padding: 10px !important;
+        overflow: hidden;
+    }
+    
+    #admin-panel.minimized .admin-content {
+        display: none;
+    }
+    
+    #admin-panel.minimized .minimize-btn {
+        margin: 0;
+        padding: 8px;
+    }
+    
+    .minimize-btn {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.4);
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin-bottom: 10px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    
+    .minimize-btn:hover {
+        background: rgba(255,255,255,0.25);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .admin-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 15px;
+    }
+    
+    .admin-action-btn {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .admin-action-btn:hover {
+        background: rgba(255,255,255,0.25);
+    }
+    
+    .admin-action-btn.danger {
+        background: rgba(239,68,68,0.2);
+        border-color: rgba(239,68,68,0.4);
+    }
+    
+    .admin-action-btn.danger:hover {
+        background: rgba(239,68,68,0.3);
+    }
+    
+    @media (max-width: 768px) {
+        footer {
+            padding: 30px 0 15px;
+        }
+        
+        .footer-text {
+            font-size: 0.9rem;
+        }
+        
+        .copyright {
+            font-size: 0.8rem;
+        }
+        
+        .student-made {
+            font-size: 0.8rem;
+        }
+    }
+    
+    .admin-title-clickable {
+        cursor: pointer !important;
+        transition: color 0.2s ease;
+    }
+    
+    .admin-title-clickable:hover {
+        color: var(--accent) !important;
+    }
+    
+    .refresh-btn {
+        background: transparent;
+        border: none;
+        color: var(--primary);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        padding: 8px;
+    }
+    
+    .refresh-btn:hover:not(.loading) {
+        transform: rotate(180deg);
+    }
+    
+    .refresh-btn.loading {
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+    
+    .modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal-content {
+        background-color: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+    }
+    
+    .modal-content h2 {
+        color: var(--dark);
+        margin-bottom: 15px;
+    }
+    
+    .modal-content p {
+        color: var(--gray);
+        margin-bottom: 20px;
+    }
+    
+    .modal-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+    
+    .modal-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .modal-btn.confirm {
+        background-color: var(--accent);
+        color: white;
+    }
+    
+    .modal-btn.confirm:hover {
+        background-color: #e6890b;
+    }
+    
+    .modal-btn.cancel {
+        background-color: var(--light);
+        color: var(--dark);
+        border: 1px solid var(--gray);
+    }
+    
+    .modal-btn.cancel:hover {
+        background-color: #f0f0f0;
+    }
+    
+    .items-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+    
+    .items-header .tabs {
+        flex: 1;
+    }
+    </style>
+    </head>
+    <body>
+    
+    <header>
+    <div class="container">
+    <div class="header-content">
+    <div class="logo">
+        <img src="C:\Users\henry\Desktop\dan\logo.jpg" alt="AIS School Logo" style="width: 50px; height: 50px; object-fit: contain; border-radius: 4px;">
+        <span>School Lost & Found</span>
+    </div>
+    <div class="quick-links">
+        <a href="#lost-items" class="quick-link"><i class="fas fa-search"></i>Browse Items</a>
+        <a href="#report-item" class="quick-link"><i class="fas fa-plus-circle"></i>Report Item</a>
+        <a href="#about" class="quick-link"><i class="fas fa-info-circle"></i>About</a>
+        <a href="#contact" class="quick-link"><i class="fas fa-envelope"></i>Contact</a>
+    </div>
+    </div>
+    </div>
+    </header>
+    
+    <section class="hero" id="about">
+    <div class="container">
+    <h1>Help Reclaim Lost Items</h1>
+    <p>Found something? Lost something? Our school community is here to help you reunite with your belongings. Together, we make our campus a better place. Browse items below or report your own using the quick navigation.</p>
+    <div class="search-bar">
+    <input type="text" placeholder="Search lost items (e.g., 'student ID', 'phone', 'keys')">
+    <button><i class="fas fa-search"></i></button>
+    </div>
+    </div>
+    </section>
+    
+    <main class="main-content" id="lost-items">
+    <div class="container">
+    <div class="section-title">
+        <h2>Lost Items at Our School</h2>
+        <p>Help reunite these items with their rightful owners</p>
+    </div>
+    
+    <div class="items-header">
+        <div class="tabs">
+            <div class="tab active" data-filter="all">All Items</div>
+            <div class="tab" data-filter="lost">Lost Items</div>
+            <div class="tab" data-filter="found">Found Items</div>
+            <div class="tab" id="claimed-tab" data-filter="claimed" style="display: none;">Claimed Items</div>
+        </div>
+        <button class="refresh-btn" id="refresh-btn" onclick="fetchItems()" title="Refresh items"><i class="fas fa-sync-alt"></i></button>
+    </div>
+    
+    <div class="items-grid"></div>
+    
+    <div class="section-title">
+    <h2>Report a Lost or Found Item</h2>
+    <p>Help someone find their belongings or return something you found</p>
+    </div>
+    
+    <div class="report-section" id="report-item">
+    <p>Found something on campus? Lost something important? Report it here and help our community reconnect with their belongings.</p>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSf4K9lI-wAQS8lESr8jWfWT52epZEjj-ATRVeiQ4KC8AR5Yew/viewform" target="_blank" class="report-btn">
+    <i class="fas fa-plus-circle"></i> Report an Item
+    </a>
+    <p style="margin-top: 15px; color: rgba(255,255,255,0.7); font-size: 0.9rem;">You'll be redirected to our secure Google Form to submit your item details.</p>
+    </div>
+    </div>
+    </main>
+    
+    <div id="claim-modal" class="modal">
+        <div class="modal-content">
+            <h2>Confirm Item Claim</h2>
+            <p>Mark "<span id="claim-item-name"></span>" as claimed?</p>
+            <p style="font-size: 0.9rem; color: var(--gray);">You will be redirected to the Google Form to complete verification.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" onclick="confirmClaim()">Yes, Claim Item</button>
+                <button class="modal-btn cancel" onclick="closeClaimModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // ===================================================================
+    // LOST & FOUND WEBSITE - FIXED ADMIN MODE
+    // ===================================================================
+    // 
+    // ADMIN ACCESS INSTRUCTIONS:
+    // Use one of these admin URL formats:
+    //    - https://domain.com?admin=k9m2n8p4
+    //    - https://domain.com#admin-k9m2n8p4  
+    //    - https://domain.com/admin-k9m2n8p4
+    //
+    // ===================================================================
+    
+    const csvUrl = 'https://script.google.com/macros/s/AKfycbyIenzgGQMvok-2VymyvYphKyrjDiGJmeDqdhZ8HPWwORMeAvsxrsM4ZZgvF4qYlxKoHw/exec';
+    const BACKEND_API_URL = 'https://script.google.com/macros/s/AKfycbwCCPPMn6cVA_s5NE5Hp8tL87CdBan1WWDm9SnmMXzbvRsd-SQ1X5pDv_r8W_uPApX8sg/exec';
+    
+    const googleFormId = '1FAIpQLSetZUDk5k0NAhPGyCqUm7CO_w_7nRnhnHz2mod1Auezs2iDeQ';
+    const formEntryIds = {
+        name: 'entry.22570393',         
+        email: 'entry.2000731965',      
+        itemClaiming: 'entry.2095923214', 
+        verification: 'entry.2046475484' 
+    };
+    
+    let items = [];
+    let currentFilter = 'all';
+    let claimedItems = new Set();
+    window.isAdminMode = false;
+    window.adminToken = 'k9m2n8p4';
+    
+    // FIXED: Improved admin detection function
+    function checkAdminAccess() {
+        const adminToken = window.adminToken;
+        const currentURL = window.location.href;
+        const currentPath = window.location.pathname;
+        const currentHash = window.location.hash;
+        const searchParams = new URLSearchParams(window.location.search);
+        
+        // Check for admin token in various URL formats
+        const isAdminURL = 
+            currentPath.includes('/admin-' + adminToken) || 
+            currentPath.includes('admin-' + adminToken) ||
+            currentHash === '#admin-' + adminToken ||
+            currentHash.includes('admin-' + adminToken) ||
+            searchParams.get('admin') === adminToken;
+        
+        console.log('Admin Check:', {
+            path: currentPath,
+            hash: currentHash,
+            searchParams: searchParams.get('admin'),
+            isAdmin: isAdminURL
+        });
+        
+        return isAdminURL;
+    }
+    
+    // Load claimed items from backend using JSONP
+    function loadClaimedItems() {
+        return new Promise((resolve) => {
+            const callbackName = 'jsonp_claimed_' + Date.now();
+            
+            window[callbackName] = function(data) {
+                if (data && !data.error) {
+                    claimedItems = new Set(data.claimedIds || []);
+                    console.log('Loaded claimed items from backend:', claimedItems.size);
+                    console.log('Claimed item IDs:', Array.from(claimedItems).map(id => `row ${id}`));
+                } else if (data && data.error) {
+                    console.warn('Backend error:', data.error);
+                }
+                delete window[callbackName];
+                const script = document.querySelector(`script[src*="${callbackName}"]`);
+                if (script) script.remove();
+                resolve();
+            };
+            
+            const script = document.createElement('script');
+            script.src = `${BACKEND_API_URL}?action=getClaimed&callback=${callbackName}`;
+            script.onerror = function() {
+                console.warn('Could not load claimed items from backend, using local cache');
+                const localClaimed = localStorage.getItem('claimedItems');
+                if (localClaimed) {
+                    try {
+                        claimedItems = new Set(JSON.parse(localClaimed));
+                    } catch(e) {}
+                }
+                delete window[callbackName];
+                const script = document.querySelector(`script[src*="${callbackName}"]`);
+                if (script) script.remove();
+                resolve();
+            };
+            document.head.appendChild(script);
+            
+            setTimeout(() => {
+                if (window[callbackName]) {
+                    console.warn('JSONP timeout, using local cache');
+                    const localClaimed = localStorage.getItem('claimedItems');
+                    if (localClaimed) {
+                        try {
+                            claimedItems = new Set(JSON.parse(localClaimed));
+                        } catch(e) {}
+                    }
+                    delete window[callbackName];
+                    const script = document.querySelector(`script[src*="${callbackName}"]`);
+                    if (script) script.remove();
+                    resolve();
+                }
+            }, 5000);
+        });
+    }
+    
+    async function saveClaimedItem(itemId) {
+        console.log('=== SAVE CLAIMED ITEM ===');
+        console.log('Item ID to mark as claimed:', itemId);
+        
+        const itemIdStr = itemId.toString();
+        
+        return new Promise((resolve) => {
+            const callbackName = 'jsonp_claim_' + Date.now();
+            
+            window[callbackName] = function(data) {
+                if (data && data.success) {
+                    console.log('✓ Backend accepted the claim for item:', itemIdStr);
+                    loadClaimedItems().then(() => {
+                        console.log('Current claimed items:', Array.from(claimedItems));
+                        renderItems();
+                        resolve(true);
+                    });
+                } else if (data && data.error) {
+                    console.error('✗ Backend error:', data.error);
+                    resolve(false);
+                } else {
+                    console.error('Unknown response format');
+                    resolve(false);
+                }
+                delete window[callbackName];
+                const script = document.querySelector(`script[src*="${callbackName}"]`);
+                if (script) script.remove();
+            };
+            
+            const url = BACKEND_API_URL + '?action=addClaimed&itemId=' + encodeURIComponent(itemIdStr) + '&callback=' + callbackName;
+            const script = document.createElement('script');
+            script.src = url;
+            script.onerror = function() {
+                console.error('Failed to sync claim with backend');
+                delete window[callbackName];
+                script.remove();
+                resolve(false);
+            };
+            document.head.appendChild(script);
+        });
+    }
+    
+    async function removeClaimedItem(itemId) {
+        console.log('=== REMOVE CLAIMED ITEM ===');
+        console.log('Item ID to unmark as claimed:', itemId);
+        
+        const itemIdStr = itemId.toString();
+        
+        return new Promise((resolve) => {
+            const callbackName = 'jsonp_unclaim_' + Date.now();
+            
+            window[callbackName] = function(data) {
+                if (data && data.success) {
+                    console.log('✓ Backend accepted the unclaim for item:', itemIdStr);
+                    loadClaimedItems().then(() => {
+                        console.log('Current claimed items:', Array.from(claimedItems));
+                        renderItems();
+                        resolve(true);
+                    });
+                } else if (data && data.error) {
+                    console.error('✗ Backend error:', data.error);
+                    resolve(false);
+                } else {
+                    console.error('Unknown response format');
+                    resolve(false);
+                }
+                delete window[callbackName];
+                const script = document.querySelector(`script[src*="${callbackName}"]`);
+                if (script) script.remove();
+            };
+            
+            const url = BACKEND_API_URL + '?action=removeClaimed&itemId=' + encodeURIComponent(itemIdStr) + '&callback=' + callbackName;
+            const script = document.createElement('script');
+            script.src = url;
+            script.onerror = function() {
+                console.error('Failed to sync unclaim with backend');
+                delete window[callbackName];
+                script.remove();
+                resolve(false);
+            };
+            document.head.appendChild(script);
+        });
+    }
+    
+    async function clearAllClaims() {
+        if (!confirm('Are you sure you want to clear ALL claimed status? This will NOT delete items, just unclaim them.')) {
+            return;
+        }
+        
+        console.log('Clearing all claims...');
+        
+        return new Promise((resolve) => {
+            const callbackName = 'jsonp_clearall_' + Date.now();
+            
+            window[callbackName] = function(data) {
+                if (data && data.success) {
+                    console.log('✓ All claims cleared from spreadsheet');
+                    loadClaimedItems().then(() => {
+                        renderItems();
+                        alert('All claims cleared successfully!');
+                        resolve();
+                    });
+                } else if (data && data.error) {
+                    console.error('Clear error:', data.error);
+                    alert('Clear failed: ' + data.error);
+                    resolve();
+                } else {
+                    console.error('Unknown response');
+                    alert('Clear failed - check console for details.');
+                    resolve();
+                }
+                delete window[callbackName];
+                const script = document.querySelector(`script[src*="${callbackName}"]`);
+                if (script) script.remove();
+            };
+            
+            const url = BACKEND_API_URL + '?action=clearAll&callback=' + callbackName;
+            const script = document.createElement('script');
+            script.src = url;
+            script.onerror = function() {
+                console.error('Failed to clear claims');
+                delete window[callbackName];
+                script.remove();
+                alert('Clear failed - check console for details.');
+                resolve();
+            };
+            document.head.appendChild(script);
+        });
+    }
+    
+    function exportClaimedCSV() {
+        const claimed = items.filter(item => claimedItems.has(item.id.toString()));
+        
+        if (claimed.length === 0) {
+            alert('No claimed items to export.');
+            return;
+        }
+        
+        let csv = 'ID,Title,Description,Location,Date,Reporter,Email\n';
+        claimed.forEach(item => {
+            csv += `${item.id},"${item.title}","${item.description}","${item.location}","${item.dateString}","${item.reporterName}","${item.email}"\n`;
+        });
+        
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `claimed_items_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
+    
+    async function clearSelectedItems() {
+        const itemsToUnclaim = [];
+        
+        document.querySelectorAll('.item-card input[type="checkbox"]:checked').forEach(checkbox => {
+            itemsToUnclaim.push(checkbox.dataset.itemId);
+        });
+        
+        if (itemsToUnclaim.length === 0) {
+            alert('No items selected.');
+            return;
+        }
+        
+        if (!confirm(`Are you sure you want to unclaim ${itemsToUnclaim.length} selected item(s)?`)) {
+            return;
+        }
+        
+        for (const itemId of itemsToUnclaim) {
+            await removeClaimedItem(itemId);
+        }
+        
+        renderItems();
+        alert(`${itemsToUnclaim.length} item(s) unclaimed successfully!`);
+    }
+    
+    async function deleteSelectedItems() {
+        const itemsToDelete = [];
+        
+        document.querySelectorAll('.item-card input[type="checkbox"]:checked').forEach(checkbox => {
+            itemsToDelete.push(checkbox.dataset.itemId);
+        });
+        
+        if (itemsToDelete.length === 0) {
+            alert('No items selected.');
+            return;
+        }
+        
+        if (!confirm(`WARNING: This will permanently DELETE ${itemsToDelete.length} item(s) from the spreadsheet!\n\nThis cannot be undone. Are you sure?`)) {
+            return;
+        }
+        
+        for (const itemId of itemsToDelete) {
+            await new Promise((resolve) => {
+                const callbackName = 'jsonp_delete_' + Date.now() + '_' + itemId;
+                
+                window[callbackName] = function(data) {
+                    if (data && data.success) {
+                        console.log('Item deleted:', itemId);
+                    } else if (data && data.error) {
+                        console.error('Delete error:', data.error);
+                    }
+                    delete window[callbackName];
+                    const script = document.querySelector(`script[src*="${callbackName}"]`);
+                    if (script) script.remove();
+                    resolve();
+                };
+                
+                const url = BACKEND_API_URL + '?action=deleteItem&itemId=' + encodeURIComponent(itemId) + '&callback=' + callbackName;
+                const script = document.createElement('script');
+                script.src = url;
+                script.onerror = function() {
+                    console.error('Failed to delete item');
+                    delete window[callbackName];
+                    script.remove();
+                    resolve();
+                };
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Refresh items from backend
+        await fetchItems();
+        renderItems();
+        alert(`${itemsToDelete.length} item(s) deleted successfully!`);
+    }
+    
+    async function deleteAllClaimedPermanently() {
+        const claimed = items.filter(item => claimedItems.has(item.id.toString()));
+        
+        if (claimed.length === 0) {
+            alert('No claimed items to delete.');
+            return;
+        }
+        
+        if (!confirm(`WARNING: This will permanently DELETE all ${claimed.length} claimed item(s) from the spreadsheet!\n\nThis cannot be undone. Are you sure?`)) {
+            return;
+        }
+        
+        return new Promise((resolve) => {
+            const callbackName = 'jsonp_deleteallclaimed_' + Date.now();
+            
+            window[callbackName] = function(data) {
+                if (data && data.success) {
+                    console.log('✓ All claimed items deleted from spreadsheet');
+                    fetchItems().then(() => {
+                        renderItems();
+                        alert(`All ${claimed.length} claimed item(s) deleted successfully!`);
+                        resolve();
+                    });
+                } else if (data && data.error) {
+                    console.error('Delete error:', data.error);
+                    alert('Delete failed: ' + data.error);
+                    resolve();
+                } else {
+                    console.error('Unknown response');
+                    alert('Delete failed - check console for details.');
+                    resolve();
+                }
+                delete window[callbackName];
+                const script = document.querySelector(`script[src*="${callbackName}"]`);
+                if (script) script.remove();
+            };
+            
+            const url = BACKEND_API_URL + '?action=deleteAllClaimed&callback=' + callbackName;
+            const script = document.createElement('script');
+            script.src = url;
+            script.onerror = function() {
+                console.error('Failed to delete all claimed items');
+                delete window[callbackName];
+                script.remove();
+                alert('Delete failed - check console for details.');
+                resolve();
+            };
+            document.head.appendChild(script);
+        });
+    }
+    
+    function isFoundItem(item) {
+        return item.type.toLowerCase().includes('found') || 
+               item.type.toLowerCase().includes('find') ||
+               item.itemType.toLowerCase().includes('found') ||
+               item.itemType.toLowerCase().includes('find') ||
+               item.type.toLowerCase() === 'found item';
+    }
+    
+    function isItemClaimed(item) {
+        return claimedItems.has(item.id.toString());
+    }
+    
+    function isItemInSheetsClaimed(item) {
+        return item.isClaimedInSheets === true;
+    }
+    
+    function createClaimFormUrl(item) {
+        const baseUrl = `https://docs.google.com/forms/d/e/${googleFormId}/viewform?usp=pp_url`;
+        const params = new URLSearchParams();
+        params.append(formEntryIds.name, item.title);
+        params.append(formEntryIds.email, '');
+        params.append(formEntryIds.itemClaiming, 
+            `${item.title} - ${item.description} (${item.location}, ${item.dateString})`
+        );
+        return `${baseUrl}&${params.toString()}`;
+    }
+    
+    async function fetchItems() {
+        const btn = document.getElementById('refresh-btn');
+        btn.classList.add('loading');
+        btn.disabled = true;
+        
+        try {
+            const response = await fetch(csvUrl);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const csvText = await response.text();
+            items = parseCSV(csvText);
+            renderItems();
+        } catch (error) {
+            console.error('Failed to fetch items:', error);
+            const itemsGrid = document.querySelector('.items-grid');
+            itemsGrid.innerHTML = `
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                    <h3>Unable to load items</h3>
+                    <p>Connection error. Please try again.</p>
+                    <button onclick="fetchItems()" style="margin-top: 10px; padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer;">Retry</button>
+                </div>
+            `;
+        } finally {
+            btn.classList.remove('loading');
+            btn.disabled = false;
+        }
+    }
+    
+    function parseCSVLine(line) {
+        const values = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            if (char === '"') {
+                if (inQuotes && line[i + 1] === '"') {
+                    current += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (char === ',' && !inQuotes) {
+                values.push(current.trim());
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        values.push(current.trim());
+        return values;
+    }
+    
+    function parseDate(dateString) {
+        if (!dateString || !dateString.trim()) return new Date();
+        
+        const str = dateString.trim();
+        const slashMatch = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+        if (slashMatch) {
+            let day = parseInt(slashMatch[1]);
+            let month = parseInt(slashMatch[2]) - 1;
+            let year = parseInt(slashMatch[3]);
+            if (year < 100) year += 2000;
+            const date = new Date(year, month, day);
+            if (!isNaN(date.getTime())) return date;
+        }
+        
+        const fallbackDate = new Date(str);
+        return isNaN(fallbackDate.getTime()) ? new Date() : fallbackDate;
+    }
+    
+    function parseCSV(csv) {
+        // Don't filter out empty lines - we need to preserve row numbers!
+        const lines = csv.split('\n');
+        if (lines.length < 2) return [];
+        
+        const parsedItems = [];
+        
+        for (let lineIndex = 1; lineIndex < lines.length; lineIndex++) {
+            const line = lines[lineIndex].trim();
+            // Skip completely empty lines but DON'T use continue - ID must stay accurate
+            if (!line) {
+                continue;
+            }
+            
+            const values = parseCSVLine(line);
+            // Skip lines with no data
+            if (values.every(v => !v || !v.trim())) {
+                continue;
+            }
+            
+            // Skip lines with no title
+            if (!values[4] || !values[4].trim()) {
+                continue;
+            }
+            
+            const dateStr = values[9] || values[0] || '';
+            const parsedDate = parseDate(dateStr);
+            const claimedValue = values[11] || '';
+            
+            // ID MUST match Google Sheets row number (lineIndex + 1 because row 1 is headers)
+            // This ensures that when backend marks row 6 as claimed, item with id=6 gets marked
+            const item = {
+                id: lineIndex + 1,
+                timestamp: values[0] || '',
+                email: values[1] || '',
+                itemType: values[2] || 'Lost',
+                reporterName: values[3] || '',
+                title: values[4] || 'Unknown Item',
+                description: values[5] || '',
+                location: values[6] || '',
+                yearGroup: values[7] || '',
+                type: values[8] || values[2] || 'Lost',
+                date: parsedDate.toISOString(),
+                dateString: dateStr,
+                additionalDetails: values[10] || '',
+                imageUrl: values[11] || '',
+                contact: values[1] || '',
+                isClaimedInSheets: (claimedValue === true || claimedValue === 'true'),
+                icon: getIconForItem(values[8] || values[2] || 'Lost', values[4] || 'Unknown Item')
+            };
+            
+            console.log(`Parsed item at row ${item.id}:`, item.title);
+            parsedItems.push(item);
+        }
+        
+        console.log(`Total items loaded: ${parsedItems.length}`);
+        return parsedItems;
+    }
+    
+    function getIconForItem(type, title) {
+        const titleLower = title.toLowerCase();
+        const typeLower = type.toLowerCase();
+        
+        if (typeLower.includes('electronics') || titleLower.includes('electronics')) return 'fas fa-laptop';
+        if (typeLower.includes('wallet') || titleLower.includes('wallet') || titleLower.includes('purse')) return 'fas fa-wallet';
+        if (typeLower.includes('glasses') || titleLower.includes('glasses') || titleLower.includes('watch')) return 'fas fa-glasses';
+        if (typeLower.includes('book') || titleLower.includes('book') || titleLower.includes('notebook')) return 'fas fa-book';
+        if (typeLower.includes('bag') || titleLower.includes('bag') || titleLower.includes('backpack')) return 'fas fa-shopping-bag';
+        if (typeLower.includes('clothing') || titleLower.includes('jacket') || titleLower.includes('hoodie')) return 'fas fa-tshirt';
+        if (titleLower.includes('phone') || titleLower.includes('mobile') || titleLower.includes('iphone')) return 'fas fa-mobile-alt';
+        if (titleLower.includes('laptop') || titleLower.includes('macbook') || titleLower.includes('computer')) return 'fas fa-laptop';
+        if (titleLower.includes('headphones') || titleLower.includes('earbuds')) return 'fas fa-headphones';
+        if (titleLower.includes('charger') || titleLower.includes('cable')) return 'fas fa-plug';
+        if (titleLower.includes('keys') || titleLower.includes('key')) return 'fas fa-key';
+        if (titleLower.includes('id card') || titleLower.includes('student id')) return 'fas fa-id-card';
+        if (titleLower.includes('water bottle') || titleLower.includes('bottle')) return 'fas fa-bottle-water';
+        if (titleLower.includes('pen') || titleLower.includes('pencil')) return 'fas fa-pen';
+        if (titleLower.includes('umbrella')) return 'fas fa-umbrella';
+        if (typeLower.includes('found')) return 'fas fa-search-plus';
+        
+        return 'fas fa-box';
+    }
+    
+    function formatDate(item) {
+        const now = new Date();
+        const date = new Date(item.date);
+        const diffTime = Math.abs(now - date);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+        
+        if (diffDays > 0) return diffDays === 1 ? '1 day ago' : `${diffDays} days ago`;
+        if (diffHours > 0) return diffHours === 1 ? '1 hour ago' : `${diffHours} hours ago`;
+        const diffMinutes = Math.floor(diffTime / (1000 * 60));
+        return diffMinutes === 1 ? '1 minute ago' : `${diffMinutes} minutes ago`;
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    function convertGoogleDriveUrl(url) {
+        if (!url || !url.trim()) return '';
+        
+        url = url.trim();
+        
+        // If it's already a direct lh3.google link, use it
+        if (url.includes('lh3.google') || url.includes('googleusercontent.com')) {
+            return url;
+        }
+        
+        // Extract file ID from various Google Drive link formats
+        let fileId = '';
+        
+        // Format: https://drive.google.com/file/d/FILE_ID/view or variations
+        const match1 = url.match(/\/d\/([a-zA-Z0-9\-_]+)/);
+        if (match1) {
+            fileId = match1[1];
+        } else {
+            // Format: https://drive.google.com/open?id=FILE_ID
+            const match2 = url.match(/[?&]id=([a-zA-Z0-9\-_]+)/);
+            if (match2) {
+                fileId = match2[1];
+            } else {
+                // Maybe it's just the file ID
+                if (url.match(/^[a-zA-Z0-9\-_]{25,}$/)) {
+                    fileId = url;
+                }
+            }
+        }
+        
+        // If we found a file ID, use the lh3.google thumbnail service which works better
+        if (fileId) {
+            return `https://lh3.google.com/d/${fileId}=w800`;
+        }
+        
+        // If it's already a direct URL, return as is
+        if (url.startsWith('http')) {
+            return url;
+        }
+        
+        return '';
+    }
+    
+    function renderItems(showLoading = false) {
+        const itemsGrid = document.querySelector('.items-grid');
+        
+        if (items.length === 0 || showLoading) {
+            itemsGrid.innerHTML = `
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <h3>Loading items...</h3>
+                    <p>Please wait while we fetch the latest lost and found items.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let filteredItems = items;
+    
+        if (currentFilter === 'lost') {
+            filteredItems = filteredItems.filter(item => !isFoundItem(item) && !isItemClaimed(item) && !isItemInSheetsClaimed(item));
+        } else if (currentFilter === 'found') {
+            filteredItems = filteredItems.filter(item => isFoundItem(item) && !isItemClaimed(item) && !isItemInSheetsClaimed(item));
+        } else if (currentFilter === 'claimed') {
+            filteredItems = filteredItems.filter(item => isItemClaimed(item) || isItemInSheetsClaimed(item));
+        } else {
+            filteredItems = filteredItems.filter(item => !isItemClaimed(item) && !isItemInSheetsClaimed(item));
+        }
+    
+        const searchTerm = document.querySelector('.search-bar input').value.toLowerCase();
+        if (searchTerm) {
+            filteredItems = filteredItems.filter(item => 
+                item.title.toLowerCase().includes(searchTerm) ||
+                item.description.toLowerCase().includes(searchTerm) ||
+                item.location.toLowerCase().includes(searchTerm) ||
+                item.reporterName.toLowerCase().includes(searchTerm)
+            );
+        }
+    
+        itemsGrid.innerHTML = '';
+        if (filteredItems.length === 0) {
+            itemsGrid.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;"><i class="fas fa-search"></i><h3>No items found</h3><p>Try adjusting your search or filter criteria</p></div>`;
+            return;
+        }
+    
+        filteredItems.forEach(item => {
+            const itemCard = document.createElement('div');
+            itemCard.className = 'item-card';
+            
+            const isFound = isFoundItem(item);
+            const isClaimed = isItemClaimed(item);
+            
+            const statusClass = isClaimed ? 'claimed' : (isFound ? 'found' : 'lost');
+            const statusLabel = isClaimed ? 'Claimed' : (isFound ? 'Found' : 'Lost');
+            const reporterDisplay = item.reporterName || 'Unknown';
+            
+            let fullDescription = item.description;
+            if (item.additionalDetails && item.additionalDetails.trim()) {
+                fullDescription += ` | ${item.additionalDetails.trim()}`;
+            }
+            
+            const claimFormUrl = createClaimFormUrl(item);
+            
+            const checkboxHtml = (window.isAdminMode && currentFilter === 'claimed') 
+                ? `<input type="checkbox" data-item-id="${item.id}" style="margin-right: 10px; cursor: pointer;">` 
+                : '';
+            
+            const titleClass = window.isAdminMode ? 'admin-title-clickable' : '';
+            
+            const imageUrl = convertGoogleDriveUrl(item.imageUrl);
+            const imageHtml = imageUrl ? `<img src="${imageUrl}" alt="${escapeHtml(item.title)}" style="width: 100%; height: 200px; object-fit: cover; background: #f0f0f0;">` : `<div class="item-image"><i class="${item.icon}"></i></div>`;
+            
+            itemCard.innerHTML = `
+                ${imageHtml}
+                <div class="item-details">
+                    ${checkboxHtml}
+                    <h3 class="${titleClass}" data-item-id="${item.id}">${escapeHtml(item.title)}</h3>
+                    <div class="item-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(item.location || 'Location not specified')}</span>
+                        <span><i class="far fa-calendar"></i> ${formatDate(item)}</span>
+                    </div>
+                    ${item.yearGroup ? `<div class="item-meta"><span><i class="fas fa-graduation-cap"></i> ${escapeHtml(item.yearGroup)}</span></div>` : ''}
+                    <div class="item-status status-${statusClass}">${statusLabel}</div>
+                    <p class="item-description">${escapeHtml(fullDescription || 'No description provided')}</p>
+                    <div class="item-contact">
+                        <span>Reported by: ${escapeHtml(reporterDisplay)}</span>
+                        ${!isClaimed ? `<button onclick="claimItemAsUser('${escapeHtml(item.title).replace(/'/g, "\\'")}', '${claimFormUrl}', '${item.id}')" class="claim-btn">
+                            <i class="fas fa-hand-holding-heart"></i> Claim Item
+                        </button>` : ''}
+                    </div>
+                </div>
+            `;
+            itemsGrid.appendChild(itemCard);
+        });
+        
+        if (window.isAdminMode) {
+            attachAdminEventListeners();
+        }
+    }
+    
+    function claimItemAsUser(itemTitle, claimFormUrl, itemId) {
+        window.open(claimFormUrl, '_blank');
+    }
+
+    function closeClaimModal() {
+        const modal = document.getElementById('claim-modal');
+        modal.classList.remove('show');
+        window.pendingClaim = null;
+    }
+
+    function confirmClaim() {
+        if (!window.pendingClaim) return;
+        
+        const { itemTitle, claimFormUrl, itemId } = window.pendingClaim;
+        closeClaimModal();
+        
+        if (itemId) {
+            saveClaimedItem(itemId).then(() => {
+                console.log(`Successfully marked "${itemTitle}" as claimed`);
+            });
+        }
+    }
+    
+    function setupEventListeners() {
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                currentFilter = this.dataset.filter || 'all';
+                renderItems();
+            });
+        });
+        
+        const searchButton = document.querySelector('.search-bar button');
+        const searchInput = document.querySelector('.search-bar input');
+        searchButton.addEventListener('click', () => renderItems());
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') renderItems();
+        });
+        searchInput.addEventListener('input', () => renderItems());
+    }
+    
+    function toggleAdminPanel() {
+        const panel = document.getElementById('admin-panel');
+        const btn = document.getElementById('minimize-btn');
+        
+        if (panel.classList.contains('minimized')) {
+            panel.classList.remove('minimized');
+            btn.innerHTML = '<i class="fas fa-minus"></i> Minimize';
+        } else {
+            panel.classList.add('minimized');
+            btn.innerHTML = '<i class="fas fa-plus"></i>';
+        }
+    }
+    
+    function addAdminControls() {
+        const claimedTab = document.getElementById('claimed-tab');
+        if (claimedTab) claimedTab.style.display = 'block';
+        
+        const adminPanel = document.createElement('div');
+        adminPanel.id = 'admin-panel';
+        adminPanel.style.cssText = `
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            max-width: 320px;
+        `;
+        
+        adminPanel.innerHTML = `
+            <button id="minimize-btn" class="minimize-btn" onclick="toggleAdminPanel()">
+                <i class="fas fa-minus"></i> Minimize
+            </button>
+            <div class="admin-content">
+                <div style="font-weight: bold; margin-bottom: 10px;">
+                    <i class="fas fa-shield-alt"></i> Admin Panel
+                </div>
+                <div style="font-size: 0.9rem; margin-bottom: 10px;">
+                    <i class="fas fa-mouse-pointer"></i> Double-click item titles to mark as claimed
+                </div>
+                <div style="font-size: 0.8rem; margin-bottom: 10px; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;">
+                    <i class="fas fa-key"></i> Admin token: <code style="background: rgba(255,255,255,0.2); padding: 2px 4px; border-radius: 2px; font-size: 0.7rem;">${window.adminToken}</code>
+                </div>
+                <div style="font-size: 0.8rem; margin-bottom: 15px; padding: 8px; background: rgba(46,204,113,0.2); border-radius: 4px; border: 1px solid rgba(46,204,113,0.3);">
+                    <i class="fas fa-check-circle"></i> Admin mode active | Claims synced globally
+                </div>
+                
+                <div class="admin-actions">
+                    <button onclick="copyAdminURL()" class="admin-action-btn">
+                        <i class="fas fa-copy"></i> Copy Admin URL
+                    </button>
+                    <button onclick="clearSelectedItems()" class="admin-action-btn">
+                        <i class="fas fa-check-circle"></i> Clear Selected Items
+                    </button>
+                    <button onclick="deleteSelectedItems()" class="admin-action-btn danger">
+                        <i class="fas fa-trash-alt"></i> Delete Selected Items
+                    </button>
+                    <button onclick="clearAllClaims()" class="admin-action-btn">
+                        <i class="fas fa-broom"></i> Clear All Claims
+                    </button>
+                    <button onclick="deleteAllClaimedPermanently()" class="admin-action-btn danger">
+                        <i class="fas fa-exclamation-triangle"></i> Delete All Claimed Items
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(adminPanel);
+    }
+    
+    function copyAdminURL() {
+        const baseUrl = window.location.origin + window.location.pathname;
+        const adminURL = baseUrl + '?admin=' + window.adminToken;
+        
+        navigator.clipboard.writeText(adminURL).then(() => {
+            alert('Admin URL copied to clipboard!\n\n' + adminURL);
+        }).catch(() => {
+            alert('Admin URL: ' + adminURL);
+        });
+    }
+    
+    function attachAdminEventListeners() {
+        if (!window.isAdminMode) return;
+        
+        document.querySelectorAll('.item-card h3').forEach(title => {
+            if (!title.hasAttribute('data-admin-listener')) {
+                title.setAttribute('data-admin-listener', 'true');
+                
+                title.addEventListener('dblclick', async function() {
+                    const itemId = this.getAttribute('data-item-id');
+                    const itemTitle = this.textContent;
+                    
+                    console.log('Double-click detected - Item ID:', itemId, 'Title:', itemTitle);
+                    
+                    if (isItemClaimed({ id: itemId })) {
+                        if (confirm(`Unmark "${itemTitle}" as claimed?`)) {
+                            await removeClaimedItem(itemId);
+                            // Don't call renderItems() here - removeClaimedItem already does it
+                        }
+                    } else {
+                        if (confirm(`Mark "${itemTitle}" as claimed? This will hide it from public view.`)) {
+                            await saveClaimedItem(itemId);
+                            // Don't call renderItems() here - saveClaimedItem already does it
+                        }
+                    }
+                });
+            }
+        });
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async function() {
+        // Check admin access FIRST
+        if (checkAdminAccess()) {
+            console.log('Admin mode enabled!');
+            window.isAdminMode = true;
+            document.body.classList.add('admin-mode');
+            addAdminControls();
+        }
+        
+        setupEventListeners();
+        renderItems(true);
+        
+        await loadClaimedItems();
+        await fetchItems();
+        
+        // Refresh periodically
+        setInterval(async () => {
+            await loadClaimedItems();
+            await fetchItems();
+        }, 45000);
+    });
+    </script>
+    
+    <footer id="contact">
+    <div class="container">
+    <div class="footer-content">
+    <div class="footer-text">
+    <p>Lost something? Found something?</p>
+    <p>Submit a report using the form above and make sure to check the item list regularly.</p>
+    </div>
+    <div class="footer-divider"></div>
+    <div style="margin: 20px 0;">
+    <h4 style="color: var(--accent); margin-bottom: 10px;">Contact Information</h4>
+    <p style="margin-bottom: 5px;"><i class="fas fa-envelope"></i> Email: studenthelpdesk@ais.edu.gh</p>
+    <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">For website issues or technical support, please contact the above email address.</p>
+    </div>
+    <div class="copyright">© 2025 AIS Lost & Found</div>
+    <div class="student-made">Student Made</div>
+    </div>
+    </div>
+    </footer>
+    
+    </body>
+    </html>
+    
